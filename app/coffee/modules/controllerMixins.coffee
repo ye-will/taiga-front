@@ -194,6 +194,7 @@ class UsFiltersMixin
         filters.assigned_to = urlfilters.assigned_to
         filters.owner = urlfilters.owner
         filters.epic = urlfilters.epic
+        filters.role = urlfilters.role
 
         @filterRemoteStorageService.getFilters(@scope.projectId, @.storeCustomFiltersName).then (userFilters) =>
             userFilters[name] = filters
@@ -219,6 +220,7 @@ class UsFiltersMixin
         loadFilters.assigned_to = urlfilters.assigned_to
         loadFilters.owner = urlfilters.owner
         loadFilters.epic = urlfilters.epic
+        loadFilters.role = urlfilters.role
         loadFilters.q = urlfilters.q
 
         return @q.all([
@@ -245,6 +247,15 @@ class UsFiltersMixin
                     it.id = "null"
 
                 it.name = it.full_name || "Unassigned"
+
+                return it
+            role = _.map data.roles, (it) ->
+                if it.id
+                    it.id = it.id.toString()
+                else
+                    it.id = "null"
+
+                it.name = it.name || "Unassigned"
 
                 return it
             owner = _.map data.owners, (it) ->
@@ -284,6 +295,10 @@ class UsFiltersMixin
                 selected = @.formatSelectedFilters("epic", epic, loadFilters.epic)
                 @.selectedFilters = @.selectedFilters.concat(selected)
 
+            if loadFilters.role
+                selected = @.formatSelectedFilters("role", role, loadFilters.role)
+                @.selectedFilters = @.selectedFilters.concat(selected)
+
             @.filterQ = loadFilters.q
 
             @.filters = [
@@ -303,6 +318,11 @@ class UsFiltersMixin
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.ASSIGNED_TO"),
                     dataType: "assigned_to",
                     content: assignedTo
+                },
+                {
+                    title: @translate.instant("COMMON.FILTERS.CATEGORIES.ROLE"),
+                    dataType: "role",
+                    content: role
                 },
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.CREATED_BY"),

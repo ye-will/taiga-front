@@ -19,7 +19,7 @@ RUN \
 COPY --from=builder /taiga/taiga-front/dist taiga-front-dist
 COPY conf/conf.json.template taiga-front-dist/
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY nginx/. /etc/nginx/.
 COPY docker-entrypoint.sh .
 
 EXPOSE 80
